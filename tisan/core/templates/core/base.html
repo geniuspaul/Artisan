@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} | Tisan</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 70px 0 0; /* Added padding at the top to accommodate the fixed navigation bar */
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+    
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            z-index: 1000;
+        }
+    
+        h1 {
+            margin: 10px;
+            font-family: 'Anton', sans-serif;
+            text-decoration: none;
+            color: #4CAF50;
+        }
+    
+        section {
+            display: flex;
+            align-items: center;
+        }
+    
+        #headbtn {
+            margin: 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+    
+        #headbtn:hover {
+            color: #4CAF50;
+        }
+        footer{
+            background-color: rgb(1, 29, 23);
+            padding: 10px;
+            margin-top:10px;
+            bottom:0px;
+        }
+        .footer-a{
+            text-decoration:none;
+            color:gray;
+        }
+        {% block style %}{% endblock style %}
+    </style>
+        
+</head>
+
+<body>
+    <nav>
+        <section>
+            <a href="/" style="margin:10px; font:Anton;"><h1>Tisan</h1></a>
+        </section>
+        <section>
+            <a href="{% url "core:find" %}" id="headbtn">Find{% if request.user.worker %} Jobs{% else %} Workers{% endif %}</a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url "core:order" %}" id="headbtn">Order</a>
+            <a href="{% url "core:create-post" %}" id="headbtn">New{% if request.user.worker %} Post{% else %} Job{% endif %}</a>
+            <a href="{% url "core:account" %}">
+                <img src="{{ request.user.image.url }}" alt="" height="30" width="30" style="border-radius: 15px; display:inline; border:1px solid gray" srcset="">
+            </a>
+            {% else %}
+            <a href="" id="headbtn">Login</a>
+            <a href="" id="headbtn">Sign Up</a>
+            {% endif %}
+        </section>
+    </nav>
+    {% block content %}
+    {% endblock content %} 
+    <footer>
+        
+        <h3>Countact Us:</h3>
+        <ul>
+            <li><a class="footer-a" href="#">Facebook</a></li>
+            <li><a class="footer-a"href="#">Instagram</a></li>
+            <li><a class="footer-a"href="mailto:admin@tisan.com">Gmail</a></li>
+        </ul>
+        <small>&#169;Copywrite 2024</small>
+    </footer>
+</body>
+</html> 

@@ -1,0 +1,114 @@
+{% extends "core/base.html" %}
+{% block title %}Account{% endblock title %}
+{% block style %}
+.acc-li:hover {
+    background-color: rgb(241, 241, 241);
+}
+
+.acc-li {
+    padding: 10px;
+    margin: 15px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.profile-section {
+    margin-top: 25px;
+}
+
+.profile-details {
+    display: flex;
+    align-items: center;
+    color:black;
+    text-decoration:none;
+}
+
+.profile-image {
+    border-radius: 20px;
+    display: inline;
+    border: 1px solid gray;
+    margin-right: 10px;
+}
+
+.profile-links {
+    margin-top: 20px;
+}
+
+.profile-links a {
+    text-decoration: none;
+    color: black;
+}
+
+.profile-links hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+{% endblock style %}
+{% block content %}
+<div class="profile-section">
+    <a href="{% url 'core:profile' request.user.id %}" class="profile-details">
+        <img src="{{ request.user.image.url }}" alt="" height="40" width="40" class="profile-image" srcset="">
+        <p>{{ request.user.email }}</p>
+    </a>
+    <hr>
+    <ul class="profile-links">
+        <li class="acc-li"><a href=""><i class="fa-regular fa-bell"></i>Notification</a></li>
+        <li class="acc-li">
+            <a href="#">Night Mode</a>
+            <label class="switch">
+                <input type="checkbox" name="night" id="">
+                <span class="slider"></span>
+            </label>
+        </li>
+        <li class="acc-li"><a href=""> {% if request.user.worker %}Worker {% else %}Empolyer{% endif %}</a></li>
+        <li class="acc-li"><a href="{% url 'core:log-out' %}">Logout</a></li>
+    </ul>
+</div>
+{% endblock %}

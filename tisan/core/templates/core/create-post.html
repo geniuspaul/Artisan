@@ -1,0 +1,95 @@
+ {% extends "core/base.html" %}
+{% block title %}New Post{% endblock title %}
+{% block style %}
+<style>
+  .form-container{
+    margin-top: 25px;
+    margin-left:10px;
+  }
+  .fields-container{
+    margin:10px;
+  }
+  .form-input {
+    height: 40px;
+    width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 0 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  .field-label{
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  /* Customizing the submit button */
+  .submit-btn {
+    padding: 12px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  .your-header{
+    margin-left:10px;
+  }
+
+  .submit-btn:hover {
+    background-color: #45a049;
+  }
+  .posts-container{
+    margin-left:10px; display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px; margin-top: 15px;
+  }
+  .post-link{
+    text-decoration: none;
+    color: black;
+  }
+  .post-container{
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    overflow: hidden; 
+    background-color: white; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .post-img{
+    border-top-left-radius: 10px; 
+    border-top-right-radius: 10px;
+  }
+</style>
+{% endblock style %}
+{% block content %}
+<div class="form-container">
+  <form action="{% url 'core:create-post'%}" enctype="multipart/form-data" method="post">
+    {% csrf_token %} 
+    {% for field in form %}
+      <div class="fields-container">
+        <small>{{ field.errors }}</small>
+        <label for="{{ field.id_for_label }}" class="field-label">{{ field.label }}:</label>
+        <div>{{ field }}</div>
+      </div>
+    {% endfor %}
+    <input class="submit-btn" type="submit" value="Post" />
+  </form>
+</div>
+<h3 class="your-header">Your{% if user.worker %} Posts{% else %} Jobs{% endif %}</h3>
+<div class="posts-container">
+  {% for post in posts %}
+    <a href="{% if request.user.worker %}{% url 'core:detail' post.id %}{% else %}{% url 'core:job-detail' post.id %}{% endif %}" class="post-link">
+      <div class="post-container">
+        <img src="{{ post.image.url }}" alt="object img" height="200" width="100%" class="post-img">
+        <div style="padding: 10px;">
+          <p style="margin: 0; font-weight: bold;">{{ post.title }}</p>
+          <p><b>Budget:</b> {{ post.cost }} Naira</p>
+        </div>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+{% endblock content %}

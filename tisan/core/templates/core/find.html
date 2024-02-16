@@ -1,0 +1,142 @@
+{% extends "core/base.html" %}
+{% block title %}
+    {% if request.user.worker %}Jobs {% else %}Workers{% endif %}
+{% endblock title %}
+{% block style %}
+    .fil-li:hover {
+        background-color: #f1f1f1;
+    }
+
+    .fil-li {
+        padding: 15px;
+        list-style-type: none;
+    }
+
+    .fil {
+        text-align: center;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    input[type="search"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 80%;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    ul li a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    div#filter {
+        background-color: #f0f0f0;
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .find-container{
+        display:grid;
+        grid-template-columns: 1fr 4fr;
+        border-radius:20px;
+    }
+    div#posts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 15px;
+        margin: 20px;
+        border-radius: 20px;
+    }
+
+    a.post-link {
+        text-decoration: none;
+        color: #333;
+    }
+
+    .post {
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .post img {
+        width: 100%;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .post-details {
+        padding: 10px;
+    }
+
+    .post-details p {
+        margin: 0;
+    }
+    .pagination{
+        display:flex;
+        justify-content:center;
+    }
+{% endblock style %}
+
+{% block content %}
+    <div class="find-container" >
+        <div id="filter">
+            <h3 class="fil">Filter</h3>
+            <form action="" method="get">
+                <input type="search" name="q" placeholder="Start Typing....">
+            </form>
+            <ul>
+                <li class="fil-li"><a href="?q="><b>All</b></a></li>
+            </ul>
+            {% for each in skills %}
+                <ul>
+                    <li class="fil-li"><a href="?q={{ each }}">{{ each }}</a></li>
+                </ul>
+            {% endfor %}
+        </div>
+            <div id="posts">
+                {% for post in posts %}
+                    <a href="{% if request.user.worker %}{% url 'core:job-detail' post.id %}{% else %}{% url 'core:detail' post.id %}{% endif %}" class="post-link">
+                        <div class="post">
+                            <img src="{{ post.image.url }}" alt="object img" height="200" width="300">
+                            <div class="post-details">
+                                <p><b>Title: </b>{{ post.title }}</p>
+                                <p><b>Budget: </b>{{ post.cost }} Naira</p>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if current_page.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ current_page.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ current_page.number }} of {{ current_page.paginator.num_pages }}.
+            </span>
+    
+            {% if current_page.has_next %}
+                <a href="?page={{ current_page.next_page_number }}">next</a>
+                <a href="?page={{ current_page.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+      </div>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "core/base.html" %}
+{% block title %}{{ user.username }}{% endblock title %}
+{% block style %}
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.profile-header {
+    text-align: center;
+}
+
+.profile-image {
+    border-radius: 75px;
+    border: 1px solid gray;
+    height: 150px;
+    width: 150px;
+}
+
+.profile-name {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.profile-divider {
+    width: 80%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-details {
+    text-align: center;
+}
+
+.profile-info {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.edit-profile-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.edit-profile-link:hover {
+    color: #4CAF50;
+}
+
+.toggle-button {
+    cursor: pointer;
+    color: #4CAF50;
+    margin-top: 10px;
+}
+
+.content-container {
+    display: none;
+}
+
+.posts-container{
+    margin-left:10px; display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px; margin-top: 15px;
+  }
+  .post-link{
+    text-decoration: none;
+    color: black;
+  }
+  .post-container{
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    overflow: hidden; 
+    background-color: white; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .post-img{
+    border-top-left-radius: 10px; 
+    border-top-right-radius: 10px;
+  }
+  .pagination{
+    display:flex;
+    justify-content:center;
+}
+</style>
+{% endblock style %}
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <img src="{{ user.image.url }}" alt="{{ user.first_name }} {{ user.last_name }}" class="profile-image">
+        <h2 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h2>
+        {% if request.user.id == user.id %}
+        <a href="{% url 'core:edit-profile' user.id %}" class="edit-profile-link">Edit Profile</a>
+        {% endif %}
+        
+    </div>
+    <hr class="profile-divider">
+
+    <div class="profile-details">
+        <p class="profile-info"><b>Worker:</b> {{ user.worker }}</p>
+        <p class="profile-info"><b>Email:</b> {{ user.email }}</p>
+        <p class="profile-info"><b>Joined:</b> {{ user.date_joined|date:"F d, Y" }}</p>
+    </div>
+
+    <div class="profile-skills">
+        {% if user.worker %}<h3 class="profile-skills-title">Posts:</h3>{% else %}<h3 class="profile-skills-title">Jobs:</h3>{% endif %}
+
+        <div class="toggle-button" onclick="toggleContent()">See All</div>
+    </div>
+</div>
+
+    <div class="content-container grid">
+        <div class="posts-container">
+            {% for post in posts %}
+              <a href="{% if request.user.worker %}{% url 'core:detail' post.id %}{% else %}{% url 'core:job-detail' post.id %}{% endif %}" class="post-link">
+                <div class="post-container">
+                  <img src="{{ post.image.url }}" alt="object img" height="200" width="100%" class="post-img">
+                  <div style="padding: 10px;">
+                    <p style="margin: 0; font-weight: bold;">{{ post.title }}</p>
+                    <p><b>Budget:</b> {{ post.cost }} Naira</p>
+                  </div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+          <div class="pagination">
+            <span class="step-links">
+                {% if current_page.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ current_page.previous_page_number }}">previous</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ current_page.number }} of {{ current_page.paginator.num_pages }}.
+                </span>
+        
+                {% if current_page.has_next %}
+                    <a href="?page={{ current_page.next_page_number }}">next</a>
+                    <a href="?page={{ current_page.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+          </div>
+    </div>
+
+<script>
+function toggleContent() {
+    var contentContainer = document.querySelector('.content-container');
+    if (contentContainer.style.display === 'none') {
+        contentContainer.style.display = 'block';
+    } else {
+        contentContainer.style.display = 'none';
+    }
+}
+</script>
+{% endblock %} 

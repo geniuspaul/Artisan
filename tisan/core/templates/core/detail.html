@@ -1,0 +1,117 @@
+ {% extends "core/base.html" %}
+{% block title %}{{ post.title }}{% endblock title %}
+{% block style %}
+    body {
+        margin: 0;
+        padding-top: 70px; /* Add padding for the fixed navigation bar */
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+    }
+
+    .post-container {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        margin-top: 20px; 
+    }
+
+    .post-image {
+        border-radius: 20px;
+        margin-left: 10px;
+        overflow: hidden;
+    }
+
+    .post-image img {
+        border-radius:20px;
+        object-fit: cover;
+    }
+
+    .post-details {
+        background-color: #f0f0f0;
+        padding: 5%;
+        margin: 10px;
+        border-radius: 10px;
+    }
+
+    .post-details p {
+        margin: 10px 0;
+    }
+     
+    
+    a.action-button {
+        display: inline-block;
+        padding: 10px;
+        margin: 10px;
+        text-decoration: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+    }
+
+    a.delete-button {
+        background-color: #ff5252; /* Red color */
+    }
+
+    a.send-request-button {
+        background-color: #4CAF50; /* Turquoise color */
+    }
+    .related-skills-container{
+        margin-left:10px; display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px; margin-top: 15px;
+    }
+    .item-link{
+        text-decoration: none;
+        color: black;
+    }
+    .item-container{
+        border: 1px solid #ddd; 
+        border-radius: 10px; 
+        overflow: hidden; 
+        background-color: white; 
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .item-img{
+        border-top-left-radius: 10px; 
+        border-top-right-radius: 10px;
+    }
+
+{% endblock style %}
+
+{% block content %}
+    <div class="post-container">
+        <div class="post-image">
+            <img src="{{ post.image.url }}" height="400" width="650" alt="">
+        </div>
+        <div class="post-details">
+            <p><b>Name:</b> {{ post.host.first_name }} {{ post.host.last_name }}</p>
+            <p><b>Email address:</b> <a href="mailto:{{ post.host.email }}">{{ post.host.email }}</a></p>
+            <p><b>Rating:</b> {{ post.host.stars }}</p>
+            <p><b>Skill:</b> {{ post.skill }}</p>
+            <p><b>Title:</b> {{ post.title }}</p>
+            <p><b>Budget:</b> {{ post.cost }} {% if post.negotiable %}Negotiable{% else %}Not Negotiable{% endif %}</p>
+            <p style="width: 500px;"><b>Description:</b> {{ post.description }}</p>
+            <b>Created At:</b> <small>{{ post.created_at }}</small> <br> <br>
+            {% if post.host == request.user %}
+                <a href="{% if ins == "post" %}{% url 'core:delete-post' post.id %} {% else %}{% url 'core:delete-job' post.id %}{% endif %}" class="action-button delete-button">Delete</a>
+            {% else %}
+                <a href="{% url 'core:chat' post.host.id %}" class="action-button send-request-button">Send Request</a>
+            {% endif %}
+        </div>
+    </div>
+    <h3>Related Skills</h3>
+    <div class="related-skills-container">        
+        {% for item in related_items %}
+        {% if item.id != post.id %}
+          <a href="{% url 'core:detail' item.id %}" class="item-link">
+            <div class="item-container">
+              <img src="{{ item.image.url }}" alt="object img" height="200" width="100%" class="item-img">
+              <div style="padding: 10px;">
+                <p style="margin: 0; font-weight: bold;">{{ item.title }}</p>
+                <p><b>Budget:</b> {{ item.cost }} Naira</p>
+              </div>
+            </div>
+          </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+{% endblock %}

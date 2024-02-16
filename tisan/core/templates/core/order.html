@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+{% block title %}Order{% endblock title %}
+{% block style %}
+#order-container {
+    margin-top: 25px;
+}
+a{
+    text-decoration:none;
+}
+.order-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid gray;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.order-item:hover {
+    background-color: rgb(241, 241, 241);
+}
+
+.order-item img {
+    border-radius: 20px;
+    display: inline;
+    border: 1px solid gray;
+    margin-right: 10px;
+}
+
+.order-item p {
+    margin: 0;
+    text-decoration: none;
+    color: black; /* Adjust the text color */
+}
+
+{% endblock style %}
+{% block content %}
+<div id="order-container">
+    {% for order in users_orders %}
+        <a href="{% if order.sender != request.user%}{% url 'core:chat' order.sender.id %}{% else %}{% url 'core:chat' order.reciever.id %}{% endif %}" class="order-item">
+            <img src="{% if order.sender != request.user%}{{ order.sender.image.url }}{% else %}{{ order.reciever.image.url }}{% endif %}" alt="" height="40" width="40">
+            <p>{% if order.sender != request.user%}{{ order.sender.first_name }} {{ order.sender.last_name }}{% else %}{{ order.reciever.first_name }} {{ order.reciever.last_name }}{% endif %}</p>
+        </a>
+    {% endfor %}
+</div>
+{% endblock content %}
