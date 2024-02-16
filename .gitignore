@@ -1,3 +1,4 @@
 env/
 tisan/core/migrations
 tisan/core/__pycache__
+tisan/Tisan/__pycache__
