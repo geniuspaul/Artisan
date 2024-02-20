@@ -76,8 +76,8 @@
                 <img src="{{ request.user.image.url }}" alt="" height="30" width="30" style="border-radius: 15px; display:inline; border:1px solid gray" srcset="">
             </a>
             {% else %}
-            <a href="" id="headbtn">Login</a>
-            <a href="" id="headbtn">Sign Up</a>
+            <a href="{% url "core:log-in" %}" id="headbtn">Login</a>
+            <a href="{% url "core:sign-up" %}" id="headbtn">Sign Up</a>
             {% endif %}
         </section>
     </nav>
