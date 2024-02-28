@@ -1,6 +1,6 @@
 
 ## Tisan
-Jan 2024 - PresentJan 
+![display image](https://github.com/geniuspaul/Artisan/blob/master/display.png)
 **User Authentication and Profile Creation:**
 Users sign up and create profiles as artisans or clients, providing details such as contact information, location, skills (for artisans), and job preferences (for clients).
 
