@@ -5,6 +5,8 @@ from .forms import SignupForm, PostForm, MessageForm, EditForm, JobForm
 from django.db.models import Q
 from django.contrib.auth import logout
 from .models import Post, User, Skills, Message, Job
+from django.contrib.auth.decorators import login_required
+
 
 
 def index(request):
@@ -23,12 +25,12 @@ def signup(request):
     context = {'form': form}
     return render(request, 'core/signup.html', context)
 
-
+@login_required()
 def logoutview(request):
     logout(request)
     return redirect("core:log-in")
 
-
+@login_required()
 def postdetail(request, pk):
     post = get_object_or_404(Post, id=pk)
     ins = 'post'
@@ -36,7 +38,7 @@ def postdetail(request, pk):
     context = {'post':post, 'related_items':related, 'ins':ins}
     return render(request, "core/detail.html", context)
 
-
+@login_required()
 def jobdetail(request, pk):
     post = get_object_or_404(Job, id=pk)
     ins = ''
@@ -44,7 +46,7 @@ def jobdetail(request, pk):
     context = {'post':post, 'related_items':related, 'ins':ins}
     return render(request, "core/detail.html", context)
 
-
+@login_required()
 def createpost(request):
     form = ''
     posts = ''
@@ -74,11 +76,11 @@ def createpost(request):
     context = {'form': form, 'posts':posts[:5], 'user':user}
     return render(request, "core/create-post.html", context)
 
-
+@login_required()
 def account(request):
     return render(request, "core/account.html")
 
-
+@login_required()
 def profile(request, pk):
     user = get_object_or_404(User, id=pk)
     if user.worker:
@@ -96,7 +98,7 @@ def profile(request, pk):
     context = { "current_page":current_page, 'user':user, "posts":posts}
     return render(request, "core/profile.html", context)
 
-
+@login_required()
 def find(request):
     q = request.GET.get('q', '').strip()
     posts = ''
@@ -126,7 +128,7 @@ def find(request):
     context = {'current_page': current_page, 'skills': skills, 'search_query': q, "posts":posts[:6]}
     return render(request, "core/find.html", context)
 
-
+@login_required()
 def deletepost(request, pk):
     post = get_object_or_404(Post, id=pk)
     if request.method == 'POST':
@@ -135,7 +137,7 @@ def deletepost(request, pk):
     context = {'post':post,}        
     return render(request, "core/delete.html", context)
 
-
+@login_required()
 def deletejob(request, pk):
     post = get_object_or_404(Job, id=pk)
     if request.method == 'POST':
@@ -144,7 +146,7 @@ def deletejob(request, pk):
     context = {'post':post}        
     return render(request, "core/delete.html", context)
 
-
+@login_required()
 def order(request):
     user_order = Message.objects.filter(
         Q(sender__id=request.user.id) | Q(reciever__id=request.user.id)
@@ -154,7 +156,7 @@ def order(request):
     return render(request, "core/order.html", context)
 
 
-
+@login_required()
 def chat(request, pk):
     friend = get_object_or_404(User, id=pk)
     sms = Message.objects.filter(
@@ -174,7 +176,7 @@ def chat(request, pk):
     context = {"smss":sms, 'form':form, 'friend':friend}
     return render(request, "core/order-field.html", context)
 
-
+@login_required()
 def editprofile(request, pk):
     user = get_object_or_404(User, id=pk)
     if request.method == "POST":
